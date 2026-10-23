@@ -42,14 +42,12 @@ package object ManiobrasTrenes {
             (e._1 ++ e._3, e._2, Nil)
     }
   }
-  /*Es una recursion lineal la condición para que entre al if es que movs no este vacio, 
-  si no lo está, hace una lista donde concatena el estado con la llamada recursiva, en esta se le pasara
-  como primer parametro un nuevo estado obtenido de aplicar la función aplicarMovimiento que tiene como parámetros
-   el estado actual y el primer movimiento de movs, el segundo parametro será movs si este primer elemento,
-   seguirá asi hasta que movs se quede sin elementos en su lista a lo cual pasara al else donde devolverá 
-   la lista con el último estado*/
+  
   def aplicarMovimientos(e:Estado, movs:Maniobra): List[Estado]= {
-    if(movs.nonEmpty) e::aplicarMovimientos(aplicarMovimiento(e,movs.head),movs.drop(1)) // 
-    else List(e)
+    movs match {
+      case Nil => List(e)
+      case m::ms => e::aplicarMovimientos(aplicarMovimiento(e,m),ms)
+    }
   }
+  
 }
