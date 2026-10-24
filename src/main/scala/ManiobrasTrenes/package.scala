@@ -49,5 +49,26 @@ package object ManiobrasTrenes {
       case m::ms => e::aplicarMovimientos(aplicarMovimiento(e,m),ms)
     }
   }
-  
+
+  def aplicarMovimientosTren(e:Estado, movs:Maniobra): Tren = {
+    movs match {
+      case Nil => e._1
+      case m :: ms => aplicarMovimientosTren(aplicarMovimiento(e, m), ms)
+    }
+  }
+  //t1 = tren original, t2 = tren deseado
+  def definirManiobra(t1:Tren, t2:Tren): Maniobra = {
+    (t1, t2) match {
+      case (x :: xs, y :: ys) =>
+        if (x == y) {
+          definirManiobra(xs, ys)
+        }
+        else {
+          val movs = List(Uno(t1.length), Uno(-(t1 indexOf y)), Dos(t1 indexOf y), Uno(-1), Dos(-(t1 indexOf y)), Uno(-t1.length))
+          movs ++ definirManiobra(aplicarMovimientosTren((t1, Nil, Nil), movs).tail, ys)
+        }
+      case (Nil, _) => Nil
+      case (_, Nil) => Nil
+    }
+  }
 }
