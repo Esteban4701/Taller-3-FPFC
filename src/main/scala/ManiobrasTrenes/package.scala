@@ -42,21 +42,29 @@ package object ManiobrasTrenes {
             (e._1 ++ e._3, e._2, Nil)
     }
   }
-  
+  /*Recibe un estado inicial y una lista de movimientos, devuelve una lista de cada estado después de aplicar un movimiento*/
   def aplicarMovimientos(e:Estado, movs:Maniobra): List[Estado]= {
     movs match {
       case Nil => List(e)
       case m::ms => e::aplicarMovimientos(aplicarMovimiento(e,m),ms)
     }
   }
-
+  /*Recibe un estado inicial y una lista de movimientos, devuelve el tren en e._1(Principal), es una función de apoyo*/
   def aplicarMovimientosTren(e:Estado, movs:Maniobra): Tren = {
     movs match {
       case Nil => e._1
       case m :: ms => aplicarMovimientosTren(aplicarMovimiento(e, m), ms)
     }
   }
-  //t1 = tren original, t2 = tren deseado
+  //t1 = tren original, t2 = tren deseado 
+  /*Algoritmo para organizar el tren:
+  1-Uno(t1.length):         Manda el tren completo de e._1(Principal) a e._2(Uno) 
+  2-Uno(-(t1 indexOf y)):   El indexOf me da la posición donde este "y" y pasa esa cantidad de e._2(Uno) a e._1(Principal) 
+  3-Dos(t1 indexOf y):      Mando la misma cantidad que traje de e._2(Uno), pero ahora haciendo e._1(Principal) a e._3(Dos) 
+  4-Uno(-1):                Traigo el "y" que era el que necesitaba de e._2(Uno) hacía e._1 (Principal)
+  5-Dos(-(t1 indexOf y)):   Traigo los que había llevado de e._1(Principal) a e._3(Dos), ahora trayéndolos de vuelta de e._3(Dos) a e._1(Principal) 
+  6-Uno(-t1.length):        Traigo los que se me quedaron en e._2(Uno) 
+  Como tal ahora me quedo con (t1, Nil, Nil) con x==y, el nuevo punto de partida para aplicar de nuevo el algoritmo*/
   def definirManiobra(t1:Tren, t2:Tren): Maniobra = {
     (t1, t2) match {
       case (x :: xs, y :: ys) =>
