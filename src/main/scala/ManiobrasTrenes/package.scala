@@ -46,14 +46,14 @@ package object ManiobrasTrenes {
   def aplicarMovimientos(e:Estado, movs:Maniobra): List[Estado]= {
     movs match {
       case Nil => List(e)
-      case m::ms => e::aplicarMovimientos(aplicarMovimiento(e,m),ms)
+      case x::xs => e::aplicarMovimientos(aplicarMovimiento(e,x),xs)
     }
   }
   /*Recibe un estado inicial y una lista de movimientos, devuelve el tren en e._1(Principal), es una función de apoyo*/
   def aplicarMovimientosTren(e:Estado, movs:Maniobra): Tren = {
     movs match {
       case Nil => e._1
-      case m :: ms => aplicarMovimientosTren(aplicarMovimiento(e, m), ms)
+      case x :: xs => aplicarMovimientosTren(aplicarMovimiento(e, x), xs)
     }
   }
   //t1 = tren original, t2 = tren deseado 
@@ -72,7 +72,7 @@ package object ManiobrasTrenes {
           definirManiobra(xs, ys)
         }
         else {
-          val movs = List(Uno(t1.length), Uno(-(t1 indexOf y)), Dos(t1 indexOf y), Uno(-1), Dos(-(t1 indexOf y)), Uno(-t1.length))
+          val movs = List(Uno(t1.length), Uno(-(t1 indexOf y)), Dos(t1 indexOf y), Uno(-t1.length), Dos(-(t1 indexOf y)))
           movs ++ definirManiobra(aplicarMovimientosTren((t1, Nil, Nil), movs).tail, ys)
         }
       case (Nil, _) => Nil
