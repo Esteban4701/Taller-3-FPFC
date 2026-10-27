@@ -1,3 +1,5 @@
+import scala.annotation.tailrec
+
 package object ManiobrasTrenes {
   type Vagon = Any
   type Tren = List[Vagon]
@@ -50,6 +52,7 @@ package object ManiobrasTrenes {
     }
   }
 
+  @tailrec
   def aplicarMovimientosTren(e:Estado, movs:Maniobra): Tren = {
     movs match {
       case Nil => e._1
