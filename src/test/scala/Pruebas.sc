@@ -28,3 +28,46 @@ aplicarMovimientos((List(1,2),Nil,Nil), List(Uno(2), Uno(-1), Dos(1), Uno(-2), D
 
 definirManiobra(List(1,"a",3),List("a",3,1)) //Espero que al pasar t1 y los movs a aplicarMovimientos el último estado sea (List("a",3,1),Nil,Nil)
 aplicarMovimientos((List(1,"a",3),Nil,Nil),List(Uno(3), Uno(-1), Dos(1), Uno(-3), Dos(-1)))
+
+//Casos IA
+// ---------- aplicarMovimiento ----------
+// 1. Pedir más vagones de los que hay en "principal": se trasladan todos
+aplicarMovimiento((List('a','b','c'), Nil, Nil), Uno(10)) ==
+  (Nil, List('a','b','c'), Nil)
+
+// 2. Traer más vagones de los que hay en "uno": regresan todos
+aplicarMovimiento((List('a'), List('b','c'), Nil), Uno(-10)) ==
+  (List('a','b','c'), Nil, Nil)
+
+// 3. Estado vacío con movimiento negativo grande: no pasa nada
+aplicarMovimiento((Nil, Nil, Nil), Dos(-3)) == (Nil, Nil, Nil)
+
+// ---------- aplicarMovimientos ----------
+val e0 = (List('a','b'), Nil, Nil)
+
+// 1. Sin movimientos: solo el estado inicial
+aplicarMovimientos(e0, Nil) == List(e0)
+
+// 2. Ida y vuelta exacta: regresa al estado inicial
+aplicarMovimientos(e0, List(Uno(2), Uno(-2))) ==
+  List(e0, (Nil, List('a','b'), Nil), e0)
+
+// 3. Movimientos que se pasan del límite y un movimiento sobre un trayecto vacío
+aplicarMovimientos(e0, List(Uno(5), Dos(-5), Uno(-5))) ==
+  List(e0,
+    (Nil, List('a','b'), Nil),
+    (Nil, List('a','b'), Nil),
+    (List('a','b'), Nil, Nil))
+
+// ---------- definirManiobra ----------
+def ok(t1: Tren, t2: Tren): Boolean =
+  aplicarMovimientos((t1, Nil, Nil), definirManiobra(t1, t2)).last == (t2, Nil, Nil)
+
+// 1. Trenes vacíos
+definirManiobra(Nil, Nil) == Nil
+
+// 2. Trenes iguales: no hay que mover nada
+definirManiobra(List('a','b','c'), List('a','b','c')) == Nil
+
+// 3. Tren largo invertido por completo
+ok((1 to 20).toList, (1 to 20).toList.reverse)
